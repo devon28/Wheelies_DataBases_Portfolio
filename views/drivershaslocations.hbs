@@ -1,0 +1,102 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<head>
+<title>Driver Locations</title>
+<link href="./css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+		function showform(page) {
+			
+			if (page == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newDriverHasLocation() { showform('insert'); }
+    function browseDriversHasLocations() { showform ('browse'); }
+    
+</script>
+</head>
+<body onload="browseDriversHasLocations()">
+  <header>
+    <h1>Wheelies</h1>
+    <p>Finding you the right ride</p>
+    <nav>
+      [ <a href="/"> Home</a> |
+      <a href="cars"> Cars</a> |
+      <a href="drivers"> Drivers</a> |
+      <a href="syndicates"> Syndicates</a> | 
+      <a href="syndicateshaslocations"> Syndicates-Locations</a> |
+      <a href="drivershaslocations"> Drivers-Locations</a> |
+      <a href="locations"> Locations</a> |
+      <a href="jobs"> Jobs</a> ]
+    </nav>
+  </header>
+  <main>
+<h2>Driver-Location</h2>
+<div id="browse"></div>
+<p>[ <a href="#" onClick="newDriverHasLocation()"> Add Relation</a> |
+<a href="#" onClick="browseDriversHasLocations()"> Hide</a> ]</p>
+{{!-- Create a table --}}
+<table id="driver-location-table">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            <th>Delete</th>
+            <th>Relationship ID</th>
+            <th>Driver</th>
+            <th>Location</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, falias, lalias, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td><button onclick="deleteDriverLocation({{this.drivers_has_locations_id}})">Delete</button></td>
+            <td>{{this.drivers_has_locations_id}}</td>
+            <td>{{this.alias}}</td>
+            <td>{{this.area}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_driver_location.js"></script>
+</div> <!-- browse -->
+<div id="insert">
+<h2>Add Relation</h2>
+<form id="add-driver_has_location-form" method="POST" action="/add-driver_has_location-form">
+    <label for="input-driver">Driver: </label>
+    <select name="input-driver" id="input-driver-ajax" required>
+        <option value="">Select a Driver</option>
+        {{#each drivers}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <label for="input-location">Location: </label>
+    <select name="input-location" id="input-location-ajax" required>
+        <option value="">Select a Location</option>
+        {{#each locations}}
+        <option value="{{this.location_id}}">{{this.area}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+</div><!-- insert -->
+</main>
+<footer>
+  2022 Devon Miller &amp; Ian McMillan
+</footer>
+</body>

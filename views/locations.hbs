@@ -1,0 +1,147 @@
+<!-- locations.hbs -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<head>
+<title>Locations</title>
+<link href="./css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+		function showform(page) {
+			
+			if (page == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (page == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newLocation() { showform('insert'); }
+    function updateLocation(location_id) { showform('update'); } 
+    function browseLocations() { showform ('browse'); }
+    
+</script>
+</head>
+<body onload="browseLocations()">
+  <header>
+    <h1>Wheelies</h1>
+    <p>Finding you the right ride</p>
+    <nav>
+      [ <a href="/"> Home</a> |
+      <a href="cars"> Cars</a> |
+      <a href="drivers"> Drivers</a> |
+      <a href="syndicates"> Syndicates</a> | 
+      <a href="syndicateshaslocations"> Syndicates-Locations</a> |
+      <a href="drivershaslocations"> Drivers-Locations</a> |
+      <a href="locations"> Locations</a> |
+      <a href="jobs"> Jobs</a> ]
+    </nav>
+  </header>
+  <main>
+<h2>Locations</h2>
+<div id="browse"></div>
+<p>[ <a href="#" onClick="updateLocation()">Update</a> |
+<a href="#" onClick="newLocation()"> Add New</a> |
+<a href="#" onClick="browseLocations()"> Hide</a> ]</p>
+{{!-- Create a table --}}
+<table id="locations-table">
+    {{!-- Header section --}}
+    <thead>
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            <th>Delete</th>
+            <th>Location ID</th>
+            <th>Name</th>
+            <th>Banks</th>
+            <th>Jewelry Stores</th>
+            <th>Museums</th>
+            <th>Police Stations</th>
+            <th>Garages</th>
+            <th>Safehouses</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td><button onclick="deleteLocation({{this.location_id}})">Delete</button></td>
+            <td>{{this.location_id}}</td>
+            <td>{{this.area}}</td>
+            <td>{{this.bank_count}}</td>
+            <td>{{this.jewelry_store_count}}</td>
+            <td>{{this.museum_count}}</td>
+            <td>{{this.police_station_count}}</td>
+            <td>{{this.garage_count}}</td>
+            <td>{{this.safehouse_count}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_location.js"></script>
+</div> <!-- browse -->
+<div id="insert">
+<h2>Add Location</h2>
+<form id="add-location-form" method="POST" action="/add-location-form">
+    <label for="input-area">Area: </label>
+    <input type="text" name="input-area" id="input-area-ajax" required>
+    <label for="input-bank_count">Banks: </label>
+    <input type="number" min="0" name="input-bank_count" id="input-bank_count-ajax">
+    <label for="input-jewelry_store_count">Jewelry Stores: </label>
+    <input type="number" min="0" name="input-jewelry_store_count" id="input-jewelry_store_count-ajax">
+    <label for="input-museum_count">Museums: </label>
+    <input type="number" min="0" name="input-museum_count" id="input-museum_count-ajax">
+    <label for="input-police_station_count">Police Stations: </label>
+    <input type="number" min="0" name="input-police_station_count" id="input-police_station_count-ajax">
+    <label for="input-garage_count">Garages: </label>
+    <input type="number" min="0" name="input-garage_count" id="input-garage_count-ajax">
+    <label for="input-safehouse_count">Safehouses: </label>
+    <input type="number" min="0" name="input-safehouse_count" id="input-safehouse_count-ajax">   
+    <input type="submit">
+</form>
+</div><!-- insert -->
+
+<div id="update">
+<h2>Updating A Location</h2>
+<form id="update-location-form" method="POST" action="/put-location-form">
+    <label for="input-location_id">Location: </label>
+    <select name="input-location_id" id="mySelect" required>
+        <option value="test">Select a Location</option>
+        {{#each data}}
+        <option value="{{this.location_id}}">{{this.area}}</option>
+        {{/each}}
+    </select>
+    <label for="input-area">Area: </label>
+    <input type="text" name="input-area" id="input-area-ajax" required>
+    <label for="input-bank_count">Banks: </label>
+    <input type="number" min="0" name="input-bank_count" id="input-bank_count-ajax">
+    <label for="input-jewelry_store_count">Jewelry Stores: </label>
+    <input type="number" min="0" name="input-jewelry_store_count" id="input-jewelry_store_count-ajax">
+    <label for="input-museum_count">Museums: </label>
+    <input type="number" min="0" name="input-museum_count" id="input-museum_count-ajax">
+    <label for="input-police_station_count">Police Stations: </label>
+    <input type="number" min="0" name="input-police_station_count" id="input-police_station_count-ajax">
+    <label for="input-garage_count">Garages: </label>
+    <input type="number" min="0" name="input-garage_count" id="input-garage_count-ajax">
+    <label for="input-safehouse_count">Safehouses: </label>
+    <input type="number" min="0" name="input-safehouse_count" id="input-safehouse_count-ajax">   
+    <input type="submit">
+</form>
+</div><!-- update -->
+</main>
+<footer>
+  2022 Devon Miller &amp; Ian McMillan
+</footer>
+</body>

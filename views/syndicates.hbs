@@ -1,0 +1,120 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<head>
+<title>Syndicates</title>
+<link href="./css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+		function showform(page) {
+			
+			if (page == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (page == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newSyndicate() { showform('insert'); }
+    function updateSyndicate(syndicate_id) { showform('update'); } 
+    function browseSyndicates() { showform ('browse'); }
+    
+</script>
+</head>
+<body onload="browseSyndicates()">
+  <header>
+    <h1>Wheelies</h1>
+    <p>Finding you the right ride</p>
+    <nav>
+      [ <a href="/"> Home</a> |
+      <a href="cars"> Cars</a> |
+      <a href="drivers"> Drivers</a> |
+      <a href="syndicates"> Syndicates</a> | 
+      <a href="syndicateshaslocations"> Syndicates-Locations</a> |
+      <a href="drivershaslocations"> Drivers-Locations</a> |
+      <a href="locations"> Locations</a> |
+      <a href="jobs"> Jobs</a> ]
+    </nav>
+  </header>
+  <main>
+<h2>Syndicates</h2>
+<div id="browse"></div>
+<p>[ <a href="#" onClick="updateSyndicate()">Update</a> |
+<a href="#" onClick="newSyndicate()"> Add Syndicate</a> |
+<a href="#" onClick="browseSyndicates()"> Hide</a> ]</p>
+{{!-- Create a table --}}
+<table id="syndicate-table">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            <th>Delete</th>
+            <th>Name</th>
+            <th>Members</th>
+           
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td><button onclick="deleteSyndicate({{this.syndicate_id}})">Delete</button></td>
+            <td>{{this.name}}</td>
+            <td>{{this.member_count}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_syndicate.js"></script>
+
+</div> <!-- browse -->
+<div id="insert">
+<h2>Add Syndicate</h2>
+<form id="add-syndicate-form" method="POST" action="/add-syndicate-form">
+    <label for="input-name">Name: </label>
+    <input type="text" name="input-name" id="input-name-ajax" required>
+    <label for="input-member_count">Members: </label>
+    <input type="number" min="0" name="input-member_count" id="input-member_count-ajax" required>
+    <input type="submit">
+</form>
+</div><!-- insert -->
+
+<div id="update">
+<h2>Update a Syndicate</h2>
+<form id="update-syndicate-form" method="POST" action="/put-syndicate-form">
+    <label for="input-syndicate_id">Syndicate: </label>
+    <select name="input-syndicate_id" id="mySelect" required>
+        <option value="">Select a Syndicate</option>
+        {{#each data}}
+        <option value="{{this.syndicate_id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+    <label for="input-name">Name: </label>
+    <input type="text" name="input-name" id="input-name-update" required>
+    <label for="input-member_count">Members: </label>
+    <input type="number" min="0" name="input-member_count" id="input-member_count-update" required>
+    <input type="submit">
+
+</form>
+
+</div><!-- update -->
+</main>
+<footer>
+  2022 Devon Miller &amp; Ian McMillan
+</footer>
+</body>

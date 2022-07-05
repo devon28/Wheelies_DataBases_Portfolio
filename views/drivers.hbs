@@ -1,0 +1,174 @@
+<!-- drivers.hbs -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<head>
+<title>Drivers</title>
+<link href="./css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+		function showform(page) {
+			
+			if (page == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (page == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newDriver() { showform('insert'); }
+    function updateDriver(pid) { showform('update'); } 
+    function browseDrivers() { showform ('browse'); }
+    
+</script>
+</head>
+<body onload="browseDrivers()">
+  <header>
+    <h1>Wheelies</h1>
+    <p>Finding you the right ride</p>
+    <nav>
+      [ <a href="/"> Home</a> |
+      <a href="cars"> Cars</a> |
+      <a href="drivers"> Drivers</a> |
+      <a href="syndicates"> Syndicates</a> | 
+      <a href="syndicateshaslocations"> Syndicates-Locations</a> |
+      <a href="drivershaslocations"> Drivers-Locations</a> |
+      <a href="locations"> Locations</a> |
+      <a href="jobs"> Jobs</a> ]
+     
+    </nav>
+  </header>
+  <main>
+<h2>Drivers</h2>
+<div id="browse"></div>
+<p> [ <a href="#" onClick="updateDriver()">Update</a> |
+<a href="#" onClick="newDriver()"> Add Driver</a> |
+<a href="#" onClick="browseDrivers()"> Hide</a> ]</p>
+{{!-- Create a table --}}
+<table id="driver-table">
+    {{!-- Header section --}}
+    <thead>
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            <th>Delete</th>
+            <th>ID</th>
+            <th>Alias</th>
+            <th>Birth Year</th>
+            <th>Criminal Reacrod</th>
+            <th>Base Pay</th>
+            <th>Total Jobs</th>
+            <th>Successful Jobs</th>
+            <th>Syndicate</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td><button onclick="deleteDriver({{this.driver_id}})">Delete</button></td>
+            <td>{{this.driver_id}}</td>
+            <td>{{this.alias}}</td>
+            <td>{{this.birth_year}}</td>
+            {{#if this.criminal_record}}
+                <td>Yes</td>
+            {{else}}
+                <td>No</td>
+            {{/if}}
+            <td>{{this.base_pay}}</td>
+            <td>{{this.total_job_count}}</td>
+            <td>{{this.successful_job_count}}</td>
+            <td>{{this.syndicate_id}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_driver.js"></script>
+</div> <!-- browse -->
+<div id="insert">
+<h2>Add Driver</h2>
+<form id="add-driver-form" method="POST" action="/add-driver-form">
+    <label for="input-alias">Alias: </label>
+    <input type="text" name="input-alias" id="input-alias-ajax" required>
+    <label for="input-birth_year">Birth Year: </label>
+    <input type="number" name="input-birth_year" id="input-birth_year-ajax" required>
+    <label for="input-criminal_record">Criminal Record: </label>
+    <select name="input-criminal_record" id="input-criminal_record-ajax" required>
+        <option value="">Criminal Record:</option>
+        <option value="1">Yes</option>
+         <option value="0">No</option>
+    </select>
+    <label for="input-base_pay">Base Pay: </label>
+    <input type="number" min="0" name="input-base_pay" id="input-base_pay-ajax" required>
+    <label for="total_job_count">Total Jobs: </label>
+    <input type="number" min="0" name="input-total_job_count" id="input-total_job_count-ajax">
+    <label for="successful_job_count">Successful Jobs: </label>
+    <input type="number" min="0" name="input-successful_job_count" id="input-successful_job_count-ajax">
+    <label for="input-syndicate">Syndicate: </label>
+    <select name="input-syndicate_id" id="input-syndicate-ajax">
+        <option value="">Select a Syndicate:</option>
+        {{#each syndicates}}
+        <option value="{{this.syndicate_id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+</div><!-- insert -->
+
+<div id="update">
+<h2>Update A Driver</h2>
+<form id="update-driver-form" method="POST" action="/put-driver-form">
+     <label for="input-driver_id">Driver: </label>
+    <select name="input-driver_id" id="mySelect" required>
+        <option value="test">Select a Driver</option>
+        {{#each data}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <label for="input-alias">Alias: </label>
+    <input type="text" name="input-alias" id="input-alias-update" required>
+    <label for="input-birth_year">Birth Year: </label>
+    <input type="text" name="input-birth_year" id="input-birth_year-update" required>
+    <label for="input-criminal_reacord">Criminal Reacord: </label>
+    <select name="input-criminal_record" id="input-criminal_record-update" required>
+        <option value="">Criminal Reacord:</option>
+        <option value="1">Yes</option>
+         <option value="0">No</option>
+    </select>
+    <label for="input-base_pay">Base Pay: </label>
+    <input type="number" min="0" name="input-base_pay" id="input-base_pay-update" required>
+    <label for="total_job_count">Total Jobs: </label>
+    <input type="number" min="0" name="input-total_job_count" id="input-total_job_count-update">
+    <label for="successful_job_count">Successful Jobs: </label>
+    <input type="number" min="0" name="input-successful_job_count" id="input-successful_job_count-update">
+    <label for="input-syndicate">Syndicate: </label>
+    <select name="input-syndicate_id" id="input-syndicate-ajax">
+        <option value="">Select a Syndicate:</option>
+        {{#each syndicates}}
+        <option value="{{this.syndicate_id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+
+</div><!-- update -->
+</main>
+<footer>
+  2022 Devon Miller &amp; Ian McMillan
+</footer>
+</body>
+
+
+

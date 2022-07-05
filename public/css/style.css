@@ -1,0 +1,46 @@
+body {
+    border: 5px solid black;
+    background-color: blanchedalmond;
+    padding: 5px;
+    margin: 5px;
+    text-align: center;
+}
+header {
+    height: 18vh;
+    border-bottom: 5px dotted black;
+    background-color: #f2cd89;
+}
+main {
+    min-height: 78vh;
+}
+footer {
+    height: 4vh;
+    background-color: #f2cd89;
+}
+a {
+    text-decoration: none;
+    padding: 2px;
+}
+a:hover {
+    background-color: black;
+    color: blanchedalmond;
+}
+nav {
+    position: relative;
+    top: 2vh;
+}
+table {
+    border: 1px solid black;
+    padding: 5px;
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+th, td {
+    border: 1px solid black;
+    padding: 5px;
+}
+.shrinkinput {
+    width: 5vw;
+}
+

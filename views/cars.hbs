@@ -1,0 +1,193 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<head>
+<title>Cars</title>
+<link href="./css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+		function showform(page) {
+			
+			if (page == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (page == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newCar() { showform('insert'); }
+    function updateCar(car_id) { showform('update'); } 
+    function browseCars() { showform ('browse'); }
+    
+</script>
+</head>
+<body onload="browseCars()">
+  <header>
+    <h1>Wheelies</h1>
+    <p>Finding you the right ride</p>
+    <nav>
+      [ <a href="/"> Home</a> |
+      <a href="cars"> Cars</a> |
+      <a href="drivers"> Drivers</a> |
+      <a href="syndicates"> Syndicates</a> | 
+      <a href="syndicateshaslocations"> Syndicates-Locations</a> |
+      <a href="drivershaslocations"> Drivers-Locations</a> |
+      <a href="locations"> Locations</a> |
+      <a href="jobs"> Jobs</a> ]
+    </nav>
+  </header>
+  <main>
+<h2>Cars</h2>
+<div id="browse"></div>
+<p>[ <a href="#" onClick="updateCar()">Update</a> |
+<a href="#" onClick="newCar()"> Add Car</a> |
+<a href="#" onClick="browseCars()"> Hide</a> ]</p>
+{{!-- Create a table --}}
+<table id="car-table">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            <th>Delete</th>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Color</th>
+            <th>Seats</th>
+            <th>Driver</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td><button onclick="deleteCar({{this.car_id}})">Delete</button></td>
+            
+            <td>{{this.car_id}}</td>
+            <td>{{this.type}}</td>
+            <td>{{this.make}}</td>
+            <td>{{this.model}}</td>
+            <td>{{this.color}}</td>
+            <td>{{this.seat_count}}</td>
+            <td>{{this.driver_id}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_car.js"></script>
+<h3>Search</h3>
+<form id="search-cars-html" method='GET' action='/cars'>
+    <label for="input-driver_id">Search by Driver: </label>
+    <select name="driver_id" id="input-driver_id-html-search">
+        <option value="">Select a Driver</option>
+        {{#each drivers}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+    <a href='/cars'><button>Reset</button></a>
+</form>
+</div> <!-- browse -->
+<div id="insert">
+<h2>Add Car</h2>
+<form id="add-car-form" method="POST" action="/add-car-form">
+    <label for="input-type">Type: </label>
+    <select name="input-type" id="input-type-ajax" required>
+        <option value="sedan">Sedan</option>
+        <option value="mivivan">Minivan</option>
+        <option value="pickup">Pickup Truck</option>
+        <option value="Luxury">Luxury Car</option>
+        <option value="motorcycle">Motorcycle</option>
+        <option value="bus">Bus</option>
+        <option value="SUV">SUV</option>
+        <option value="van">Van</option>
+        <option value="sport">Sports Car</option>
+    </select>
+    <label for="input-make">Make: </label>
+    <input type="text" name="input-make" id="input-make-ajax" required>
+    <label for="input-model">Model: </label>
+    <input type="text" name="input-model" id="input-model-ajax" required>
+    <label for="input-color">Color: </label>
+    <input type="text" name="input-color" id="input-color-ajax" required>
+    <label for="input-seat_count">Seats: </label>
+    <input type="number" min="0" name="input-seat_count" id="input-seat_count-ajax" required>
+    <label for="input-driver">Driver: </label>
+    <select name="input-driver_id" id="input-driver-ajax" required>
+        <option value="">Select a Driver</option>
+        {{#each drivers}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+</div><!-- insert -->
+
+<div id="update">
+<h2>Update an Existing Car</h2>
+<form id="update-car-form" method="POST" action="/put-car-form">
+
+    <label for="input-car_id">Car ID: </label>
+    <select name="input-car_id" id="mySelect" required>
+        <option value="test">Select a Car</option>
+        {{#each data}}
+        <option value="{{this.car_id}}">{{this.car_id}}</option>
+        {{/each}}
+    </select>
+    <label for="input-type">Type: </label>
+    <select name="input-type" id="input-type-ajax" required>
+        <option value="sedan">Sedan</option>
+        <option value="mivivan">Minivan</option>
+        <option value="pickup">Pickup Truck</option>
+        <option value="Luxury">Luxury Car</option>
+        <option value="motorcycle">Motorcycle</option>
+        <option value="bus">Bus</option>
+        <option value="SUV">SUV</option>
+        <option value="van">Van</option>
+        <option value="sport">Sports Car</option>
+    </select>
+    <label for="input-make">Make: </label>
+    <input type="text" name="input-make" id="input-make-update" required>
+    <label for="input-model">Model: </label>
+    <input type="text" name="input-model" id="input-model-update" required>
+    <label for="input-color">Color: </label>
+    <input type="text" name="input-color" id="input-color-update" required>
+    <label for="input-seat_count">Seats: </label>
+    <input type="number" min="0" name="input-seat_count" id="input-seat_count-update" required>
+    <label for="input-driver_id">Driver: </label>
+    <select name="input-driver_id" id="input-driver_id-update" required>
+        <option value="">Select a Driver</option>
+        {{#each drivers}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+
+</form>
+
+</div><!-- update -->
+</main>
+<footer>
+  2022 Devon Miller &amp; Ian McMillan
+</footer>
+</body>
+
+
+
+
+

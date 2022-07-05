@@ -1,0 +1,207 @@
+<!-- jobs.hbs -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<head>
+<title>Jobs</title>
+<link href="./css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+		function showform(page) {
+			
+			if (page == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (page == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newJob() { showform('insert'); }
+    function updateJob(jid) { showform('update'); } 
+    function browseJobs() { showform ('browse'); }
+    
+</script>
+</head>
+<body onload="browseJobs()">
+  <header>
+    <h1>Wheelies</h1>
+    <p>Finding you the right ride</p>
+    <nav>
+      [ <a href="/"> Home</a> |
+      <a href="cars"> Cars</a> |
+      <a href="drivers"> Drivers</a> |
+      <a href="syndicates"> Syndicates</a> | 
+      <a href="syndicateshaslocations"> Syndicates-Locations</a> |
+      <a href="drivershaslocations"> Drivers-Locations</a> |
+      <a href="locations"> Locations</a> |
+      <a href="jobs"> Jobs</a> ]
+    </nav>
+  </header>
+  <main>
+<h2>Jobs</h2>
+<div id="browse"></div>
+<p>[ <a href="#" onClick="updateJob()">Update</a> |
+<a href="#" onClick="newJob()"> Add New</a> |
+<a href="#" onClick="browseJobs()"> Hide</a> ]</p>
+{{!-- Create a table --}}
+<table id="job-table">
+    {{!-- Header section --}}
+    <thead>
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            <th>Delete</th>
+            <th>Job ID</th>
+            <th>Job Type</th>
+            <th>Status</th>
+            <th>Cargo &#40;kg&#41;</th>
+            <th>Crew Needed</th>
+            <th>Bonus Pay</th>
+            <th>Car Type Needed</th>
+            <th>Syndicate</th>
+            <th>Driver</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the id, fname, lname, homeworld and age, in order --}}
+        {{#each data}}
+        <tr>
+            <td><button onclick="deleteJob({{this.job_id}})">Delete</button></td>
+            <td>{{this.job_id}}</td>
+            <td>{{this.job_type}}</td>
+            <td>{{this.status}}</td>
+            <td>{{this.cargo_kg}}</td>
+            <td>{{this.crew_count}}</td>
+            <td>{{this.bonus_pay}}</td>
+            <td>{{this.car_type_needed}}</td>
+            <td>{{this.name}}</td>
+            <td>{{this.alias}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+<script src="./js/delete_job.js"></script>
+</div> <!-- browse -->
+<div id="insert">
+<h2>Add Job</h2>
+<form id="add-job-form" method="POST" action="/add-job-form">
+    <label for="input-job_type">Job Type: </label>
+    <input type="text" name="input-job_type" id="input-job_type-ajax" required>
+    <label for="input-status">Status: </label>
+    <select name="input-status" id="input-status-ajax" required>
+        <option value="available">Available</option>
+        <option value="tasked">Tasked</option>
+        <option value="completed">Completed</option>
+    </select>
+    <label for="input-cargo_kg">Cargo Weight &#40;kg&#41;: </label>
+    <input type="number" min="0" name="input-cargo_kg" id="input-cargo_kg-ajax">
+    <label for="input-crew_count">Number of Crew: </label>
+    <input type="number" min="0" name="input-crew_count" id="input-crew_count-ajax">
+    <label for="bonus_pay">Bonus Pay: </label>
+    <input type="number" min="0" name="input-bonus_pay" id="input-bonus_pay-ajax">
+    <label for="car_type_needed">Car Type Needed: </label>
+    <select name="input-car_type_needed" id="input-car_type_needed-ajax">
+        <option value="any">Any</option>
+        <option value="sedan">Sedan</option>
+        <option value="mivivan">Minivan</option>
+        <option value="pickup">Pickup Truck</option>
+        <option value="Luxury">Luxury Car</option>
+        <option value="motorcycle">Motorcycle</option>
+        <option value="bus">Bus</option>
+        <option value="SUV">SUV</option>
+        <option value="van">Van</option>
+        <option value="sport">Sports Car</option>
+    </select>
+    <label for="input-syndicate">Syndicate: </label>
+    <select name="input-syndicate" id="input-syndicate-ajax" required>
+        <option value="">Select a Syndicate:</option>
+        {{#each syndicates}}
+        <option value="{{this.syndicate_id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+    <label for="input-driver">Driver: </label>
+    <select name="input-driver" id="input-driver-ajax">
+        <option value="">Select a Driver:</option>
+        {{#each drivers}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+</div><!-- insert -->
+
+<div id="update">
+<h2>Updating A Job</h2>
+<form id="update-job-form" method="POST" action="/put-job-form">
+    <label for="input-job_id">Job ID: </label>
+    <select name="input-job_id" id="mySelect" required>
+        <option value="test">Select a Job</option>
+        {{#each data}}
+        <option value="{{this.job_id}}">{{this.job_id}}</option>
+        {{/each}}
+    </select>
+    <label for="input-job_type">Job Type: </label>
+    <input type="text" name="input-job_type" id="input-job_type-ajax" required>
+    <label for="input-status">Status: </label>
+    <select name="input-status" id="input-status-ajax" required>
+        <option value="Available">Available:</option>
+        <option value="Tasked">Tasked</option>
+        <option value="Completed">Completed</option>
+    </select>
+    <label for="input-cargo_kg">Cargo Weight &#40;kg&#41;: </label>
+    <input type="number" min="0" name="input-cargo_kg" id="input-cargo_kg-ajax">
+    <label for="input-crew_count">Number of Crew: </label>
+    <input type="number" min="0" name="input-crew_count" id="input-crew_count-ajax">
+    <label for="bonus_pay">Bonus Pay: </label>
+    <input type="number" min="0" name="input-bonus_pay" id="input-bonus_pay-ajax">
+    <label for="car_type_needed">Car Type Needed: </label>
+    <select name="input-car_type_needed" id="input-car_type_needed-ajax">
+        <option value="any">Any</option>
+        <option value="sedan">Sedan</option>
+        <option value="mivivan">Minivan</option>
+        <option value="pickup">Pickup Truck</option>
+        <option value="Luxury">Luxury Car</option>
+        <option value="motorcycle">Motorcycle</option>
+        <option value="bus">Bus</option>
+        <option value="SUV">SUV</option>
+        <option value="van">Van</option>
+        <option value="sport">Sports Car</option>
+    </select>
+    <label for="input-syndicate">Syndicate: </label>
+    <select name="input-syndicate" id="input-syndicate-ajax" required>
+        <option value="">Select a Syndicate:</option>
+        {{#each syndicates}}
+        <option value="{{this.syndicate_id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+    <label for="input-driver">Driver: </label>
+    <select name="input-driver" id="input-driver-ajax">
+        <option value="">Select a Driver:</option>
+        {{#each drivers}}
+        <option value="{{this.driver_id}}">{{this.alias}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+
+</div><!-- update -->
+</main>
+<footer>
+  2022 Devon Miller &amp; Ian McMillan
+</footer>
+</body>
+
+
+
